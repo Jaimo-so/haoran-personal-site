@@ -164,8 +164,7 @@ export async function PATCH(req: NextRequest) {
     if (payload.html !== undefined) updates.html = payload.html
     if (payload.description !== undefined) {
       const rawDescription = typeof payload.description === 'string' ? payload.description.trim() : ''
-      const rawContent = typeof payload.content === 'string' ? payload.content : ''
-      updates.description = rawDescription || buildAutoDescription(rawContent)
+      updates.description = rawDescription
     }
     if (payload.category !== undefined) updates.category = payload.category
     if (payload.tags !== undefined) updates.tags = payload.tags

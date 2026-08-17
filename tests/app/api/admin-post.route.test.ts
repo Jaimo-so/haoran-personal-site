@@ -64,7 +64,7 @@ describe('/api/admin/posts/[slug] route', () => {
     mocks.enqueueBackgroundJob.mockResolvedValue(undefined)
   })
 
-  it('updates a post, falls back description, and tolerates cache invalidation failures', async () => {
+  it('updates a post, preserves an explicitly cleared description, and tolerates cache invalidation failures', async () => {
     const request = {
       cookies: {
         get: vi.fn(() => ({ value: 'token' })),
@@ -83,7 +83,7 @@ describe('/api/admin/posts/[slug] route', () => {
         slug: 'next_slug',
         title: '文章标题',
         content: '更新后的正文',
-        description: '更新后的正文',
+        description: '',
         tags: ['AI', '写作'],
         cover_image: '/covers/admin.webp',
         published_at: 1_787_173_200,

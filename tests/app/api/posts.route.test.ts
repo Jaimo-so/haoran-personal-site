@@ -101,7 +101,7 @@ describe('/api/posts route', () => {
     )
   })
 
-  it('patches a post with fallback description and normalized next slug', async () => {
+  it('allows an existing post description to be cleared and normalizes the next slug', async () => {
     mocks.parseJsonBody.mockResolvedValue({
       current_slug: 'old-slug',
       new_slug: 'new_slug',
@@ -123,7 +123,7 @@ describe('/api/posts route', () => {
         slug: 'new_slug',
         title: '  新标题  ',
         content: '  新正文  ',
-        description: '新正文',
+        description: '',
         status: 'draft',
         cover_image: '/covers/next.webp',
         published_at: 1_787_086_800,

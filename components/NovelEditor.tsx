@@ -424,7 +424,9 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
       return
     }
 
-    const normalizedDescription = (description || buildAutoDescription(plainText) || '').trim()
+    const normalizedDescription = currentSlug
+      ? description.trim()
+      : (description || buildAutoDescription(plainText) || '').trim()
     const snapshot = buildAutosaveSnapshot({
       currentSlug,
       nextSlug,
@@ -781,7 +783,9 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
     const html = editor.getHTML()
     const hasContent = content || /<(img|video|audio|iframe)\s/.test(html)
     if (!hasContent) { setFeedback({ type: 'error', message: '正文还是空的。' }); return }
-    const normalizedDescription = (description || buildAutoDescription(content) || '').trim()
+    const normalizedDescription = editSlug !== null
+      ? description.trim()
+      : (description || buildAutoDescription(content) || '').trim()
     const publishedAtTimestamp = parseDateTimeLocal(publishedAt)
     if (publishedAtTimestamp === null) {
       setPublishDateError('请选择有效的文章日期。')
@@ -833,7 +837,7 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
         nextSlug: persistedSlug || '',
         title: normalizedTitle,
         html,
-        description: (description || buildAutoDescription(content) || '').trim(),
+        description: normalizedDescription,
         category,
         tags,
         coverImage,

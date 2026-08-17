@@ -76,7 +76,7 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
     const nextSlug = typeof nextSlugRaw === 'string' ? normalizePostSlug(nextSlugRaw) : ''
     const publishedAt = normalizePublishedAt(published_at)
     if (publishedAt === null) return jsonError('文章日期格式不正确', 400)
-    const normalizedDescription = typeof description === 'string' && description.trim()
+    const normalizedDescription = typeof description === 'string'
       ? description.trim()
       : buildAutoDescription(typeof content === 'string' ? content : '')
 
