@@ -1,0 +1,16 @@
+[Unit]
+Description=qmblog WeChat bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/qmblog-wechat-bridge
+EnvironmentFile=/etc/qmblog-wechat-bridge/bridge.env
+ExecStart=/usr/bin/node /opt/qmblog-wechat-bridge/server.mjs
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

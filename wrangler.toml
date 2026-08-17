@@ -1,0 +1,55 @@
+name = "ai-product-notes"
+main = "worker.ts"
+compatibility_date = "2026-04-14"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+[dev]
+port = 8788
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[ai]
+binding = "WORKERS_AI"
+
+[[services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "ai-product-notes"
+
+# Minimal resource bindings for open-source / Deploy to Cloudflare usage.
+# Modern Wrangler and Deploy buttons can auto-provision these resources.
+# `npm run cf:init` will replace them in `wrangler.local.toml` with concrete remote bindings.
+
+[[d1_databases]]
+binding = "DB"
+
+[[r2_buckets]]
+binding = "IMAGES"
+
+# Optional Queue binding for background jobs. Uncomment after creating the queue.
+# [[queues.producers]]
+# binding = "BACKGROUND_QUEUE"
+# queue = "qiaomu-blog-background-jobs"
+#
+# [[queues.consumers]]
+# queue = "qiaomu-blog-background-jobs"
+
+[vars]
+NEXT_PUBLIC_SITE_URL = "https://your-domain.com"
+AI_BASE_URL = "https://api.openai.com/v1"
+AI_MODEL = "gpt-4o-mini"
+WORKERS_AI_MODEL = "@cf/meta/llama-3.1-8b-instruct"
+# Optional enhancement flags. Leave unset/disabled for open-source or low-cost deployments.
+# ENABLE_BACKGROUND_JOBS = "true"
+# ENABLE_WORKERS_AI = "true"
+# ENABLE_VECTOR_SEARCH = "true"
+# ENABLE_CF_IMAGE_PIPELINE = "true"
+
+# Secrets（通过 wrangler secret put 设置）：
+# - ADMIN_PASSWORD
+# - ADMIN_TOKEN_SALT
+# - AI_CONFIG_ENCRYPTION_SECRET
+# - AI_API_KEY
+# - CLOUDFLARE_ACCOUNT_ID (optional, for Workers AI model discovery)
+# - CLOUDFLARE_API_TOKEN (optional, for Workers AI model discovery)

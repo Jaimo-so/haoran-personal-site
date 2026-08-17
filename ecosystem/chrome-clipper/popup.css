@@ -1,0 +1,361 @@
+/* ===== Reset & Base ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 360px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f4ed;
+  color: #141413;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#app {
+  padding: 20px;
+}
+
+/* ===== Header ===== */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  min-height: 28px;
+}
+
+h1 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #141413;
+  letter-spacing: -0.2px;
+  flex: 1;
+  text-align: center;
+}
+
+.header-btn {
+  background: none;
+  border: none;
+  color: #87867f;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.header-btn:hover {
+  color: #141413;
+  background: #e8e6dc;
+}
+
+/* ===== Views ===== */
+.view {
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ===== Form Elements ===== */
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #5e5d59;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 9px 12px;
+  background: #faf9f5;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  color: #141413;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2387867f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #c96442;
+  box-shadow: 0 0 0 3px rgba(201, 100, 66, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #87867f;
+}
+
+/* ===== Form Row (side by side) ===== */
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.form-row .form-group {
+  margin-bottom: 0;
+}
+
+.form-group-flex {
+  flex: 1;
+}
+
+/* ===== Pill Toggle ===== */
+.pill-group {
+  display: flex;
+  background: #e8e6dc;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.pill {
+  flex: 1;
+  padding: 7px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: transparent;
+  color: #5e5d59;
+  text-align: center;
+}
+
+.pill:hover {
+  color: #141413;
+}
+
+.pill.active {
+  background: #fff;
+  color: #141413;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Buttons ===== */
+.btn-primary {
+  width: 100%;
+  padding: 11px 20px;
+  background: #c96442;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s, opacity 0.15s, transform 0.1s;
+}
+
+.btn-primary:hover {
+  background: #b85839;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  padding: 9px 18px;
+  background: #faf9f5;
+  color: #141413;
+  border: 1px solid #e8e6dc;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.btn-secondary:hover {
+  border-color: #c96442;
+  background: #fff;
+  color: #c96442;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: #87867f;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: color 0.15s;
+}
+
+.btn-text:hover {
+  color: #141413;
+}
+
+.btn-compact {
+  padding: 9px 24px;
+  width: auto;
+}
+
+/* ===== Progress View ===== */
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 0 16px;
+  gap: 16px;
+}
+
+.spinner-large {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e8e6dc;
+  border-top-color: #c96442;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.progress-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #141413;
+}
+
+.progress-detail {
+  font-size: 12px;
+  color: #87867f;
+  min-height: 16px;
+}
+
+/* ===== Result Views (Success / Error) ===== */
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0 8px;
+  gap: 12px;
+}
+
+.result-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.error-icon {
+  background: rgba(244, 63, 94, 0.1);
+  color: #f43f5e;
+}
+
+.result-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #141413;
+  text-align: center;
+  line-height: 1.4;
+  max-width: 280px;
+  word-break: break-word;
+}
+
+.result-detail {
+  font-size: 12px;
+  color: #87867f;
+}
+
+.error-text {
+  color: #e11d48;
+  font-weight: 500;
+}
+
+.result-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+  width: 100%;
+  justify-content: center;
+}
+
+.result-actions .btn-secondary {
+  flex: 1;
+  max-width: 140px;
+}
+
+/* ===== Settings saved toast ===== */
+.toast {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #141413;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

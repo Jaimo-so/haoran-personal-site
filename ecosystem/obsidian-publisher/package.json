@@ -1,0 +1,20 @@
+{
+  "name": "obsidian-qiaomu-blog-publisher",
+  "version": "1.0.0",
+  "description": "Publish Obsidian notes to Qiaomu Blog as drafts",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
+  },
+  "keywords": [],
+  "author": "joeseesun",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "builtin-modules": "^3.3.0",
+    "esbuild": "^0.20.0",
+    "obsidian": "latest",
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ======== HEADER ======== -->
+    <header id="header">
+      <button id="btn-back" class="header-btn hidden" title="返回">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <h1>Qiaomu Blog Clipper</h1>
+      <button id="btn-settings" class="header-btn" title="设置">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- ======== VIEW: CLIP (Main) ======== -->
+    <div id="view-clip" class="view">
+      <div class="form-group">
+        <label for="input-title">标题</label>
+        <input id="input-title" type="text" placeholder="页面标题（自动获取）" spellcheck="false">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group form-group-flex">
+          <label for="select-category">分类</label>
+          <select id="select-category">
+            <option value="">未分类</option>
+          </select>
+        </div>
+        <div class="form-group form-group-flex">
+          <label>状态</label>
+          <div class="pill-group">
+            <button class="pill active" data-status="draft">草稿</button>
+            <button class="pill" data-status="published">发布</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-clip" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+        </svg>
+        剪藏
+      </button>
+    </div>
+
+    <!-- ======== VIEW: SETTINGS ======== -->
+    <div id="view-settings" class="view hidden">
+      <div class="form-group">
+        <label for="input-api-url">API URL</label>
+        <input id="input-api-url" type="url" placeholder="https://your-domain.com" spellcheck="false">
+      </div>
+      <div class="form-group">
+        <label for="input-token">API Token</label>
+        <input id="input-token" type="password" placeholder="输入你的 API Token" spellcheck="false">
+      </div>
+      <button id="btn-save" class="btn-primary">保存设置</button>
+    </div>
+
+    <!-- ======== VIEW: PROGRESS ======== -->
+    <div id="view-progress" class="view hidden">
+      <div class="progress-container">
+        <div class="spinner-large"></div>
+        <p id="progress-text" class="progress-text">正在提取内容...</p>
+        <div id="progress-detail" class="progress-detail"></div>
+      </div>
+    </div>
+
+    <!-- ======== VIEW: SUCCESS ======== -->
+    <div id="view-success" class="view hidden">
+      <div class="result-container">
+        <div class="result-icon success-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17l-5-5"/>
+          </svg>
+        </div>
+        <p id="success-title" class="result-title"></p>
+        <p id="success-detail" class="result-detail"></p>
+        <div class="result-actions">
+          <a id="btn-edit" class="btn-secondary" href="#" target="_blank">编辑文章</a>
+          <a id="btn-view" class="btn-secondary" href="#" target="_blank">查看文章</a>
+        </div>
+        <button id="btn-done" class="btn-text">完成</button>
+      </div>
+    </div>
+
+    <!-- ======== VIEW: ERROR ======== -->
+    <div id="view-error" class="view hidden">
+      <div class="result-container">
+        <div class="result-icon error-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+        </div>
+        <p id="error-message" class="result-title error-text"></p>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary btn-compact">重试</button>
+          <button id="btn-close-error" class="btn-secondary btn-compact">关闭</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
