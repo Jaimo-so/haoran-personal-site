@@ -39,6 +39,7 @@ export default async function AdminProtectedLayout({
           <nav className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
             <Link href="/admin/posts" className={navCls}>文章</Link>
             <Link href="/admin/categories" className={navCls}>分类</Link>
+            <Link href="/admin/tools" className={navCls}>工具</Link>
             <Link href="/admin/settings" className={navCls}>设置</Link>
             <div className="w-px h-4 bg-[var(--editor-line)] mx-2 hidden md:block" />
             <Link

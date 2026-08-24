@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { SiteHeader } from '@/components/SiteHeader'
 import { SiteFooter } from '@/components/SiteFooter'
 import { Pagination } from '@/components/Pagination'
-import { PERSONAL_SITE, PERSONAL_TOOLKIT } from '@/lib/personal-site'
+import { PERSONAL_SITE } from '@/lib/personal-site'
 import type { HomeProps } from '@/components/HomeClient'
 
 function formatDate(ts: number) {
@@ -43,6 +43,7 @@ export function HomeVariantA({
   navLinks,
   currentPage,
   totalPages,
+  managedTools,
 }: HomeProps) {
   const router = useRouter()
   const githubLink = navLinks.find((link) => link.label.toLowerCase() === 'github')
@@ -171,22 +172,45 @@ export function HomeVariantA({
             </h2>
             <span className="text-sm text-[var(--stone-gray)]">How I work</span>
           </div>
-          <div className="grid gap-px overflow-hidden rounded-2xl border border-[var(--border-warm)] bg-[var(--border-warm)] md:grid-cols-3">
-            {PERSONAL_TOOLKIT.map((item) => (
-              <article key={item.index} className="bg-[var(--editor-panel)] p-7 sm:p-8">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-sm tabular-nums text-[var(--editor-accent)]">{item.index}</span>
-                  <span className="text-right text-xs text-[var(--stone-gray)]">{item.tools}</span>
-                </div>
-                <h3 className="mt-12 text-balance font-serif text-xl font-medium text-[var(--editor-ink)]">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-pretty text-sm leading-7 text-[var(--editor-muted)]">
-                  {item.description}
-                </p>
-              </article>
-            ))}
-          </div>
+          {managedTools.length === 0 ? (
+            <div className="rounded-2xl border border-[var(--border-warm)] bg-[var(--editor-panel)] px-6 py-12 text-center">
+              <p className="text-sm text-[var(--editor-muted)]">新的工具正在整理中。</p>
+            </div>
+          ) : (
+            <div className="grid gap-px overflow-hidden rounded-2xl border border-[var(--border-warm)] bg-[var(--border-warm)] md:grid-cols-3">
+              {managedTools.map((item, index) => (
+                <a
+                  key={item.id}
+                  href={item.link_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex min-h-64 flex-col bg-[var(--editor-panel)] p-7 transition-colors hover:bg-[var(--editor-soft)] sm:p-8"
+                  aria-label={`打开${item.name}`}
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-sm tabular-nums text-[var(--editor-accent)]">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-right text-xs text-[var(--stone-gray)]">{item.category}</span>
+                  </div>
+                  <div className="mt-12 flex-1">
+                    <h3 className="text-balance font-serif text-xl font-medium text-[var(--editor-ink)] transition-colors group-hover:text-[var(--editor-accent)]">
+                      {item.name}
+                    </h3>
+                    {item.description && (
+                      <p className="mt-3 text-pretty text-sm leading-7 text-[var(--editor-muted)]">
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
+                  <div className="mt-7 flex items-center justify-between border-t border-[var(--border-warm)] pt-4 text-xs font-medium text-[var(--editor-muted)]">
+                    <span>查看工具</span>
+                    <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--editor-accent)]" aria-hidden="true" />
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
         </section>
 
         <section id="contact" className="border-t border-[var(--border-warm)] py-20 sm:py-24">

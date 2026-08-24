@@ -6,6 +6,7 @@ import { getSiteHeaderData } from '@/lib/site'
 import { HomeClient } from '@/components/HomeClient'
 import { getSiteUrl } from '@/lib/site-config'
 import { PERSONAL_SITE } from '@/lib/personal-site'
+import { getManagedTools, type ManagedTool } from '@/lib/managed-tools'
 
 const PAGE_SIZE = 25
 const BASE_URL = getSiteUrl()
@@ -32,14 +33,16 @@ export default async function Home({
   let totalCount = 0
   let navLinks: SiteNavLink[] = []
   let categories: SiteCategoryLink[] = []
+  let managedTools: ManagedTool[] = []
   let defaultTheme: Theme = 'refined'
   try {
     const env = await getAppCloudflareEnv()
     if (env?.DB) {
       const headerData = await getSiteHeaderData(env.DB)
-      ;[posts, totalCount] = await Promise.all([
+      ;[posts, totalCount, managedTools] = await Promise.all([
         getPosts(env.DB, PAGE_SIZE, (currentPage - 1) * PAGE_SIZE),
         getPostsCount(env.DB),
+        getManagedTools(env.DB),
       ])
       navLinks = headerData.navLinks
       categories = headerData.categories
@@ -93,6 +96,7 @@ export default async function Home({
         currentPage={currentPage}
         totalPages={totalPages}
         categorySlugMap={categorySlugMap}
+        managedTools={managedTools.filter((tool) => tool.is_visible === 1)}
       />
     </>
   )

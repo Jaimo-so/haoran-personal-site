@@ -3,6 +3,7 @@
 import { type Theme } from '@/lib/appearance'
 import type { PostWithTags } from '@/lib/db'
 import type { SiteCategoryLink, SiteNavLink } from '@/lib/site'
+import type { ManagedTool } from '@/lib/managed-tools'
 import { HomeVariantA } from '@/components/themes/HomeVariantA'
 
 export type { Theme }
@@ -15,6 +16,7 @@ export interface HomeProps {
   currentPage: number
   totalPages: number
   categorySlugMap: Record<string, string>
+  managedTools: ManagedTool[]
 }
 
 export function HomeClient(props: HomeProps) {
