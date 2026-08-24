@@ -1,6 +1,6 @@
 # AI 产品手记
 
-这是一个面向 **2027 届 AI 产品经理求职与长期写作** 的个人网站，已完成精致极简主题初始化。
+这是一个面向 ** AI 产品经理长期写作** 的个人网站，已完成精致极简主题初始化。
 
 - 首页结构：个人定位、关注方向、最近文章
 - 视觉方向：暖白纸张底色、衬线标题、克制的陶土色强调、充足留白
@@ -40,32 +40,6 @@ Qiaomu Blog Open Source 不是一个只会渲染 Markdown 的静态模板，而�
 - 发布状态：公开、草稿、密码访问、链接访问
 - 默认初始化配置：主题、导航、字体、AI 文本模型模板、AI 生图模型模板
 - Cloudflare Workers + D1 + R2 部署，不需要自己维护服务器和 CDN
-
-## 截图预览
-
-### 四套首页主题
-
-![四套首页主题](docs/screenshots/home-themes.webp)
-
-### 编辑器与所见即所得写作
-
-![编辑器总览](docs/screenshots/editor-overview.webp)
-
-### Ask AI / Bubble Menu
-
-![Ask AI](docs/screenshots/ask-ai.png)
-
-### 后台设置与主题、代码、API Token 管理
-
-![后台设置](docs/screenshots/admin-settings.webp)
-
-### 多种发布状态
-
-![发布状态](docs/screenshots/publish-states.png)
-
-### AI 模型与生图配置
-
-![图片模型配置](docs/screenshots/image-provider.png)
 
 ## 配套生态也一起开源了
 
