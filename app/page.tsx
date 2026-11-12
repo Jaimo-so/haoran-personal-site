@@ -19,6 +19,7 @@ export const revalidate = 3600 // 1小时缓存
 export const dynamicParams = true
 
 export const metadata = {
+  title: { absolute: `${PERSONAL_SITE.siteName} · AI 产品笔记` },
   alternates: {
     canonical: BASE_URL,
   },
