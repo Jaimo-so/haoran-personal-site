@@ -1,6 +1,6 @@
 export const PERSONAL_SITE = {
   siteName: 'HaoRan',
-  ownerName: '你的名字',
+  ownerName: 'HaoRan',
   role: 'AI Builder',
   headline: '把 AI 能力，变成用户愿意使用的产品。',
   introduction:

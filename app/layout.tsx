@@ -44,6 +44,7 @@ export const metadata: Metadata = {
     template: `%s · ${PERSONAL_SITE.siteName}`,
   },
   description: PERSONAL_SITE.description,
+  authors: [{ name: PERSONAL_SITE.ownerName }],
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
