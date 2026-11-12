@@ -22,7 +22,20 @@ describe('default cover images', () => {
       { baseUrl: 'https://blog.qiaomu.ai' },
     )
 
-    expect(cover).toMatch(/^https:\/\/blog\.qiaomu\.ai\/default-covers\/qm-cover-[1-3]\.jpg$/)
+    expect(cover).toBe('https://blog.qiaomu.ai/images/haoran-ip.png')
+  })
+
+  it('replaces previously saved site default covers while preserving external images', () => {
+    for (const cover_image of [
+      '/default-covers/qm-cover-1.jpg',
+      'https://ai-product-notes.3516750545s.workers.dev/default-covers/qm-cover-2.jpg',
+      'https://blog.haoran-ai.workers.dev/default-covers/qm-cover-3.jpg',
+    ]) {
+      expect(resolvePostCoverImage({ cover_image }, { baseUrl: 'https://blog.haoran-ai.workers.dev' }))
+        .toBe('https://blog.haoran-ai.workers.dev/images/haoran-ip.png')
+    }
+    expect(resolvePostCoverImage({ cover_image: 'https://cdn.example.com/default-covers/qm-cover-1.jpg' }))
+      .toBe('https://cdn.example.com/default-covers/qm-cover-1.jpg')
   })
 
   it('prefers the explicit cover image and resolves relative paths', () => {
@@ -39,6 +52,6 @@ describe('default cover images', () => {
 
   it('resolves the site-wide fallback cover image', () => {
     expect(resolveDefaultSiteCoverImage('https://blog.qiaomu.ai'))
-      .toBe('https://blog.qiaomu.ai/default-covers/qm-cover-1.jpg')
+      .toBe('https://blog.qiaomu.ai/images/haoran-ip.png')
   })
 })
