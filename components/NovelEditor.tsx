@@ -773,7 +773,7 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
   }
 
   // ── Save ──
-  const handleSave = async () => {
+  const handleSave = async (nextStatus: PublishStatus = publishStatus) => {
     const editor = editorRef.current
     const normalizedTitle = title.trim()
     const normalizedSlug = normalizePostSlug(slug)
@@ -804,11 +804,11 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
       const method = isEdit ? 'PUT' : 'POST'
 
       let statusFields: { status: string; is_hidden: number; password?: string | null }
-      if (publishStatus === 'encrypted') {
+      if (nextStatus === 'encrypted') {
         statusFields = { status: 'published', is_hidden: 0, password: initialData?.password || generatePassword() }
       } else {
         const m = { public: { status: 'published', is_hidden: 0, password: null }, draft: { status: 'draft', is_hidden: 0, password: null }, unlisted: { status: 'published', is_hidden: 1, password: null } }
-        statusFields = m[publishStatus as 'public' | 'draft' | 'unlisted']
+        statusFields = m[nextStatus as 'public' | 'draft' | 'unlisted']
       }
 
       const response = await fetch(url, {
@@ -847,6 +847,7 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
 
       setSaveState('saved')
       setLastSavedAt(Date.now())
+      setPublishStatus(nextStatus)
 
       if (isEdit) {
         if (!description && normalizedDescription) {
@@ -855,13 +856,16 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
         if (persistedSlug) {
           syncPersistedSlug(persistedSlug, editSlug, true)
         }
-        setFeedback({ type: 'success', message: '文章已更新。', slug: persistedSlug || editSlug || undefined })
+        const message = nextStatus === 'draft' ? '网站文章草稿已保存。'
+          : nextStatus === 'public' ? '文章已发布到个人网站，访客可在首页和文章页面阅读。'
+          : '网站文章已更新。'
+        setFeedback({ type: 'success', message, slug: persistedSlug || editSlug || undefined })
       } else {
         if (!description && normalizedDescription) {
           setDescription(normalizedDescription)
         }
         const msgs = { public: '已发布', draft: '草稿已保存', encrypted: '已发布（加密）', unlisted: '已发布（链接访问）' }
-        setFeedback({ type: 'success', message: `${msgs[publishStatus]}`, slug: result.slug })
+        setFeedback({ type: 'success', message: `${msgs[nextStatus]}`, slug: result.slug })
         setTitle('')
         latestTitleRef.current = ''
         lastAutosaveSnapshotRef.current = null
@@ -1107,16 +1111,27 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
             <CategorySelector value={category} onChange={(val) => { setCategory(val); markDirty({ category: val }) }} />
 
             {/* Publish button + dropdown */}
+            {publishStatus === 'draft' && (
+              <button
+                type="button"
+                onClick={() => { void handleSave('public') }}
+                disabled={saving || uploadingImage}
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-[var(--editor-accent)] px-3 py-1.5 text-sm font-semibold text-[var(--editor-accent)] transition hover:bg-[var(--editor-soft)] disabled:opacity-60"
+              >
+                <Globe className="h-3.5 w-3.5" aria-hidden="true" />
+                发布到网站
+              </button>
+            )}
             <div className="relative" ref={publishPanelRef}>
               <div className="inline-flex">
                 <button
                   type="button"
-                  onClick={handleSave}
+                  onClick={() => { void handleSave() }}
                   disabled={saving || uploadingImage}
                   className="inline-flex items-center gap-1.5 rounded-l-lg bg-[var(--editor-accent)] pl-3 pr-2 py-1.5 text-sm font-semibold text-white transition hover:brightness-105 disabled:opacity-60"
                 >
                   <Globe className="h-3.5 w-3.5" />
-                  {saving ? '保存中…' : editSlug ? '更新' : '发布'}
+                  {saving ? '保存中…' : publishStatus === 'draft' ? '保存草稿' : editSlug ? '更新网站文章' : '发布到网站'}
                 </button>
                 <button
                   type="button"
@@ -1185,7 +1200,7 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
                     <div className="flex justify-end gap-2">
                       <button
                         type="button"
-                        onClick={() => { setPublishStatus('draft'); handleSave() }}
+                        onClick={() => { void handleSave('draft') }}
                         disabled={saving}
                         className="px-3 py-1.5 text-sm text-[var(--editor-ink)] border border-[var(--editor-line)] rounded-lg hover:bg-[var(--editor-soft)] transition disabled:opacity-50"
                       >
@@ -1193,11 +1208,11 @@ export function NovelEditor({ initialData }: NovelEditorProps = {}) {
                       </button>
                       <button
                         type="button"
-                        onClick={handleSave}
+                        onClick={() => { void handleSave(publishStatus === 'draft' ? 'public' : publishStatus) }}
                         disabled={saving}
                         className="px-3 py-1.5 text-sm font-semibold text-white bg-[var(--editor-accent)] rounded-lg hover:brightness-105 transition disabled:opacity-50"
                       >
-                        {saving ? '保存中…' : editSlug ? '更新文章' : '发布'}
+                        {saving ? '保存中…' : publishStatus === 'draft' || !editSlug ? '发布到网站' : '更新网站文章'}
                       </button>
                     </div>
                   </div>

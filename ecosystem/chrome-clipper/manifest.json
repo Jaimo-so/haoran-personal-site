@@ -1,10 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Qiaomu Blog Clipper",
-  "version": "1.0.0",
-  "description": "一键剪藏网页到 Qiaomu Blog 草稿",
-  "permissions": ["activeTab", "storage", "scripting"],
-  "host_permissions": ["<all_urls>"],
+  "name": "HaoRan · 转载到我的网站",
+  "version": "1.1.0",
+  "description": "从已打开的公众号文章自动提取标题、正文和图片，保存到个人网站并继续编辑。",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://mmbiz.qpic.cn/*",
+    "https://mmbiz.qlogo.cn/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -20,5 +27,9 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ]
 }

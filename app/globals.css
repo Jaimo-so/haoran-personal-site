@@ -66,6 +66,42 @@
 
 html {
   background: var(--background);
+  scroll-padding-top: 80px;
+}
+
+/* Reading position is driven by the document scroll timeline, not a scroll handler. */
+.reading-track {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.reading-progress {
+  height: 100%;
+  width: 100%;
+  background: var(--editor-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: reading-position linear both;
+  animation-timeline: scroll(root block);
+}
+
+@keyframes reading-position {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (max-width: 639px) {
+  .public-article-page { background-image: none; }
+  .public-article-page .public-article-card {
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+  }
 }
 
 body {
@@ -147,6 +183,18 @@ body {
   padding: 0;
   font-size: 1rem;
   line-height: 1.85;
+}
+
+.about-editor-prose {
+  min-height: 32rem;
+  padding: 2rem;
+}
+
+@media (max-width: 639px) {
+  .about-editor-prose {
+    min-height: 26rem;
+    padding: 1.5rem 1.25rem;
+  }
 }
 
 @media (min-width: 640px) {

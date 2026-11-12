@@ -51,5 +51,10 @@ export async function getSiteHeaderData(db: D1Database): Promise<{
     // Keep graceful fallback behavior for public pages
   }
 
+  if (navLinks.length > 0 && !navLinks.some((link) => link.url === '/#toolkit' || link.url === '#toolkit')) {
+    const projectIndex = navLinks.findIndex((link) => link.url === '/#work' || link.url === '#work')
+    navLinks.splice(projectIndex < 0 ? navLinks.length : projectIndex + 1, 0, { label: '工具箱', url: '/#toolkit', openInNewTab: false })
+  }
+
   return { navLinks, categories, defaultTheme }
 }

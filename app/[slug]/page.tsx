@@ -108,13 +108,13 @@ export default async function PostPage({
   if (needsPassword) {
     if (!pwd) {
       return (
-        <div className="theme-home-refined public-grid-background min-h-screen bg-[var(--background)] flex flex-col">
+        <div className="theme-home-refined public-grid-background public-article-page min-h-screen bg-[var(--background)] flex flex-col">
           <SiteHeader
             initialTheme={headerData.defaultTheme}
             navLinks={headerData.navLinks}
             categories={headerData.categories}
             activeCategorySlug={activeCategorySlug}
-            stickyOnMobile={false}
+            showProgress
           />
           <main className="page-main mx-auto w-full max-w-3xl px-4 sm:px-6 flex-1 py-8 sm:py-12">
             <PasswordPrompt />
@@ -128,13 +128,13 @@ export default async function PostPage({
     if (!isValid) {
       passwordError = '密码错误，请重试'
       return (
-        <div className="theme-home-refined public-grid-background min-h-screen bg-[var(--background)] flex flex-col">
+        <div className="theme-home-refined public-grid-background public-article-page min-h-screen bg-[var(--background)] flex flex-col">
           <SiteHeader
             initialTheme={headerData.defaultTheme}
             navLinks={headerData.navLinks}
             categories={headerData.categories}
             activeCategorySlug={activeCategorySlug}
-            stickyOnMobile={false}
+            showProgress
           />
           <main className="page-main mx-auto w-full max-w-3xl px-4 sm:px-6 flex-1 py-8 sm:py-12">
             <PasswordPrompt error={passwordError} />
@@ -158,13 +158,13 @@ export default async function PostPage({
   const contentContainerId = `post-content-${post.slug}`
 
   return (
-    <div className="theme-home-refined public-grid-background min-h-screen bg-[var(--background)] flex flex-col">
+    <div className="theme-home-refined public-grid-background public-article-page min-h-screen bg-[var(--background)] flex flex-col">
       <SiteHeader
         initialTheme={headerData.defaultTheme}
         navLinks={headerData.navLinks}
         categories={headerData.categories}
         activeCategorySlug={activeCategorySlug}
-        stickyOnMobile={false}
+        showProgress
       />
 
       <main className="page-main mx-auto w-full max-w-3xl px-4 sm:px-6 flex-1 py-8 sm:py-12">
@@ -202,7 +202,7 @@ export default async function PostPage({
             </>
           )
         })()}
-          <article className="rounded-2xl border border-[var(--border-warm)] bg-[var(--background)] px-6 py-8 sm:px-10 sm:py-10">
+          <article className="public-article-card rounded-2xl border border-[var(--border-warm)] bg-[var(--background)] px-6 py-8 sm:px-10 sm:py-10">
             <header className="mb-10 sm:mb-12">
               <h1
                 className="article-display-title text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--editor-ink)] leading-snug mb-4 sm:mb-5"

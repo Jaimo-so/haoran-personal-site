@@ -32,6 +32,7 @@
     "@tiptap/react": "^3.22.3",
     "@tiptap/starter-kit": "^3.22.3",
     "@types/turndown": "^5.0.6",
+    "cheerio": "1.0.0",
     "gray-matter": "^4.0.3",
     "html2pdf.js": "^0.14.0",
     "juice": "^11.1.1",

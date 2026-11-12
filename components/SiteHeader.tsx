@@ -16,6 +16,7 @@ interface SiteHeaderProps {
   activeCategorySlug?: string | null
   stickyOnMobile?: boolean
   initialTheme?: Theme
+  showProgress?: boolean
 }
 
 const defaultNavLinks: NavLink[] = [...PERSONAL_NAV_LINKS]
@@ -23,6 +24,7 @@ const defaultNavLinks: NavLink[] = [...PERSONAL_NAV_LINKS]
 export function SiteHeader({
   navLinks,
   stickyOnMobile = true,
+  showProgress = false,
 }: SiteHeaderProps) {
   const links = navLinks && navLinks.length > 0 ? navLinks : defaultNavLinks
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -71,6 +73,7 @@ export function SiteHeader({
 
   return (
     <header className={`site-header ${stickyOnMobile ? 'sticky' : 'sm:sticky'} top-0 z-40 border-b border-[var(--editor-line)] bg-[var(--background)]/95 backdrop-blur-sm`}>
+      {showProgress && <div className="reading-track" aria-hidden="true"><div className="reading-progress" /></div>}
       <div className="site-header-inner mx-auto max-w-5xl px-5 sm:px-8 lg:px-10">
         <div className="h-14 flex items-center justify-between gap-4">
           {renderLogo()}

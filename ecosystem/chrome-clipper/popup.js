@@ -75,7 +75,7 @@ function showToast(msg) {
 // ---- Settings ----
 
 btnSettings.addEventListener('click', () => {
-  chrome.storage.sync.get(['apiUrl', 'apiToken'], (data) => {
+  chrome.storage.local.get(['apiUrl', 'apiToken'], (data) => {
     inputApiUrl.value = data.apiUrl || '';
     inputToken.value = data.apiToken || '';
   });
@@ -86,7 +86,7 @@ btnBack.addEventListener('click', () => {
   showView('clip');
 });
 
-btnSave.addEventListener('click', () => {
+btnSave.addEventListener('click', async () => {
   const apiUrl = inputApiUrl.value.trim().replace(/\/+$/, '');
   const apiToken = inputToken.value.trim();
 
@@ -99,12 +99,25 @@ btnSave.addEventListener('click', () => {
     return;
   }
 
-  chrome.storage.sync.set({ apiUrl, apiToken }, () => {
+  const error = $('#settings-error');
+  error.textContent = '';
+  try {
+    const destination = new URL(apiUrl);
+    const local = ['localhost', '127.0.0.1', '[::1]'].includes(destination.hostname);
+    if (destination.username || destination.password || destination.pathname !== '/' || destination.search || destination.hash
+      || (destination.protocol !== 'https:' && !(local && destination.protocol === 'http:'))) {
+      throw new Error('请填写 HTTPS 网站首页地址；本地预览支持 HTTP。');
+    }
+    const allowed = await chrome.permissions.request({ origins: [destination.origin + '/*'] });
+    if (!allowed) { error.textContent = '需要允许连接你的个人网站，才能上传文章和图片。'; return; }
+  } catch (err) { error.textContent = err.message || '网站地址无效。'; return; }
+  chrome.storage.local.set({ apiUrl, apiToken }, () => {
     showToast('设置已保存');
     // Refresh categories with new settings
     categoriesCache = null;
     setTimeout(() => {
       showView('clip');
+      fillTitle();
       fetchCategories();
     }, 600);
   });
@@ -128,7 +141,7 @@ async function fetchCategories() {
     return;
   }
 
-  const data = await chrome.storage.sync.get(['apiUrl', 'apiToken']);
+  const data = await chrome.storage.local.get(['apiUrl', 'apiToken']);
   if (!data.apiUrl || !data.apiToken) return;
 
   try {
@@ -174,7 +187,7 @@ async function fillTitle() {
 // ---- Clip action ----
 
 btnClip.addEventListener('click', async () => {
-  const data = await chrome.storage.sync.get(['apiUrl', 'apiToken']);
+  const data = await chrome.storage.local.get(['apiUrl', 'apiToken']);
   if (!data.apiUrl || !data.apiToken) {
     showView('settings');
     showToast('请先配置 API 信息');
@@ -182,10 +195,7 @@ btnClip.addEventListener('click', async () => {
   }
 
   const title = inputTitle.value.trim();
-  if (!title) {
-    inputTitle.focus();
-    return;
-  }
+  btnClip.disabled = true;
 
   showView('progress');
   progressText.textContent = '正在提取内容...';
@@ -206,18 +216,22 @@ btnClip.addEventListener('click', async () => {
         ? `上传了 ${response.imageCount} 张图片`
         : '内容已保存';
 
-      btnEdit.href = `${apiUrl}/editor?edit=${response.slug}`;
+      btnEdit.href = response.editorUrl || `${apiUrl}/editor?edit=${encodeURIComponent(response.slug)}`;
+      const warnings = $('#success-warnings');
+      warnings.replaceChildren();
+      (response.warnings || []).forEach(message => { const li = document.createElement('li'); li.textContent = message; warnings.appendChild(li); });
+      btnView.classList.toggle('hidden', response.status !== 'published');
       btnView.href = `${apiUrl}/${response.slug}`;
 
       showView('success');
     } else {
-      errorMessage.textContent = response?.error || '剪藏失败';
+      errorMessage.textContent = response?.error || '转载失败';
       showView('error');
     }
   } catch (err) {
     errorMessage.textContent = err.message || '发生未知错误';
     showView('error');
-  }
+  } finally { btnClip.disabled = false; }
 });
 
 // ---- Success / Error buttons ----
@@ -260,7 +274,7 @@ chrome.runtime.onMessage.addListener((msg) => {
 // ---- Init ----
 
 (async function init() {
-  const data = await chrome.storage.sync.get(['apiUrl', 'apiToken']);
+  const data = await chrome.storage.local.get(['apiUrl', 'apiToken']);
   if (!data.apiUrl || !data.apiToken) {
     showView('settings');
     return;

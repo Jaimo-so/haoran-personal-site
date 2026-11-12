@@ -2,7 +2,7 @@ export const PERSONAL_SITE = {
   siteName: 'HaoRan',
   ownerName: 'HaoRan',
   role: 'AI Builder',
-  headline: '把 AI 能力，变成用户愿意使用的产品。',
+  headline: '思考产品，也亲手构建。',
   introduction:
     '我关注生成式 AI、用户体验与产品增长，也在持续记录产品拆解、原型实验和学习复盘。',
   description: '一名 2027 届本科生的 AI 产品作品、思考与成长记录。',
@@ -33,5 +33,6 @@ export const PERSONAL_NAV_LINKS = [
   { label: '关于', url: '/about', openInNewTab: false },
   { label: '文章', url: '/#writing', openInNewTab: false },
   { label: '项目', url: '/#work', openInNewTab: false },
+  { label: '工具箱', url: '/#toolkit', openInNewTab: false },
   { label: 'RSS', url: '/feed.xml', openInNewTab: false },
 ] as const

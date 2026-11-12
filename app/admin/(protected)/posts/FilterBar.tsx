@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Dropdown } from '@/components/Dropdown'
+import { WechatImportButton } from '@/components/WechatImportButton'
 
 interface FilterBarProps {
   currentStatus?: string
@@ -131,7 +132,8 @@ export function FilterBar({
             </div>
           </form>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <WechatImportButton />
             <div className="min-w-[160px]">
               <Dropdown
                 options={categoryOptions}

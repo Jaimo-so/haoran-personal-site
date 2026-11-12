@@ -23,11 +23,11 @@ function sendProgress(step, current = 0, total = 0) {
 }
 
 /**
- * Get settings from chrome.storage.sync.
+ * Get settings from chrome.storage.local.
  */
 async function getSettings() {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(['apiUrl', 'apiToken'], resolve);
+    chrome.storage.local.get(['apiUrl', 'apiToken'], resolve);
   });
 }
 
@@ -65,9 +65,10 @@ async function uploadImage(blob, filename, apiUrl, apiToken) {
  */
 async function downloadImage(url) {
   try {
-    const resp = await fetch(url, { redirect: 'follow' });
+    const resp = await fetch(url, { redirect: 'follow', credentials: 'omit', signal: AbortSignal.timeout(15000) });
     if (!resp.ok) return null;
-    return await resp.blob();
+    const blob = await resp.blob();
+    return /^image\/(jpeg|png|gif|webp|avif)$/.test(blob.type) && blob.size <= 10 * 1024 * 1024 ? blob : null;
   } catch {
     return null;
   }
@@ -117,13 +118,13 @@ function resolveUrl(imgUrl, pageUrl) {
 async function clipPage(options = {}) {
   const { title: customTitle, category, status } = options;
 
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const { apiUrl, apiToken } = await getSettings();
   if (!apiUrl || !apiToken) {
     return { success: false, error: '请先在设置中配置 API URL 和 Token' };
   }
 
-  // 1. Get active tab
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  // 1. Use the tab selected when the user clicked the extension.
   if (!tab) {
     return { success: false, error: '没有找到活动标签页' };
   }
@@ -148,12 +149,16 @@ async function clipPage(options = {}) {
     return { success: false, error: `内容提取失败: ${err.message}` };
   }
 
+  if (extractResult?.error) return { success: false, error: extractResult.error };
   if (!extractResult || !extractResult.markdown) {
     return { success: false, error: '无法提取页面内容' };
   }
 
   const { title: extractedTitle, markdown: rawMarkdown, images, url: pageUrl } = extractResult;
-  const finalTitle = customTitle || extractedTitle;
+  const isWechat = extractResult.source === 'wechat';
+  const finalTitle = isWechat ? extractedTitle : customTitle || extractedTitle;
+  let html = extractResult.html || '';
+  const warnings = [];
   let markdown = rawMarkdown;
   let imageCount = 0;
 
@@ -188,6 +193,8 @@ async function clipPage(options = {}) {
 
         // Replace all occurrences of this image URL in markdown
         markdown = markdown.split(imgUrl).join(fullUrl);
+        const escapeAttr = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        html = html.split('src="' + escapeAttr(imgUrl) + '"').join('src="' + escapeAttr(fullUrl) + '"');
 
         uploaded++;
         sendProgress('uploading', uploaded, images.length);
@@ -200,7 +207,7 @@ async function clipPage(options = {}) {
     imageCount = uploaded;
 
     if (failed > 0) {
-      console.log(`${failed} image(s) failed to upload, keeping original URLs.`);
+      warnings.push(`${failed} 张图片未能保存到网站，已保留原图链接，请在编辑器中核对。`);
     }
   }
 
@@ -208,7 +215,7 @@ async function clipPage(options = {}) {
   sendProgress('creating');
 
   try {
-    const postBody = {
+    const postBody = isWechat ? { mode: 'browser', url: pageUrl, title: finalTitle, html } : {
       title: finalTitle,
       content: markdown,
       status: status || 'draft',
@@ -218,7 +225,8 @@ async function clipPage(options = {}) {
       postBody.category = category;
     }
 
-    const resp = await fetch(`${apiUrl}/api/posts`, {
+    const endpoint = isWechat ? '/api/admin/import/wechat' : '/api/posts';
+    const resp = await fetch(`${apiUrl}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -228,8 +236,8 @@ async function clipPage(options = {}) {
     });
 
     if (!resp.ok) {
-      const text = await resp.text();
-      return { success: false, error: `创建文章失败: ${resp.status} ${text.slice(0, 200)}` };
+      const failure = await resp.json().catch(() => ({}));
+      return { success: false, error: failure.error || `创建文章失败（${resp.status}）` };
     }
 
     const json = await resp.json();
@@ -237,8 +245,19 @@ async function clipPage(options = {}) {
       return { success: false, error: '创建文章失败: API 返回 success=false' };
     }
 
+    const editorUrl = `${apiUrl}/editor?edit=${encodeURIComponent(json.slug)}`;
+    const allWarnings = [...warnings, ...(json.warnings || [])];
+    // Finish even when Chrome closes the popup; the service worker owns the handoff.
+    if (isWechat && allWarnings.length === 0) {
+      await chrome.tabs.create({ url: editorUrl }).catch(() => {
+        allWarnings.push('文章已保存，请点击“编辑网站文章”打开编辑器。');
+      });
+    }
     return {
       success: true,
+      warnings: allWarnings,
+      status: isWechat ? 'draft' : status || 'draft',
+      editorUrl,
       slug: json.slug,
       title: finalTitle,
       imageCount: imageCount,
@@ -250,14 +269,18 @@ async function clipPage(options = {}) {
 
 // ---- Message listener ----
 
+let clipRunning = false;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'clip') {
+    if (clipRunning) { sendResponse({ success: false, error: '已有文章正在转载，请等待完成。' }); return false; }
+    clipRunning = true;
     clipPage({
       title: message.title,
       category: message.category,
       status: message.status,
     })
       .then(sendResponse)
+      .finally(() => { clipRunning = false; })
       .catch((err) => {
         sendResponse({ success: false, error: err.message });
       });

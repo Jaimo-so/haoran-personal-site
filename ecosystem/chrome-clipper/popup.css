@@ -359,3 +359,8 @@ h1 {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+.help-text { font-size: 12px; color: #5e5d59; line-height: 1.7; margin-bottom: 16px; overflow-wrap: anywhere; }
+ul.help-text { padding-left: 18px; }
+button:focus-visible, a:focus-visible { outline: 2px solid #c96442; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .view, .spinner-large { animation: none; } }
