@@ -1,7 +1,5 @@
 const DEFAULT_POST_COVER_IMAGES = [
-  '/default-covers/qm-cover-1.jpg',
-  '/default-covers/qm-cover-2.jpg',
-  '/default-covers/qm-cover-3.jpg',
+  '/images/haoran-ip.png',
 ] as const
 const DEFAULT_SITE_COVER_IMAGE = DEFAULT_POST_COVER_IMAGES[0]
 
@@ -18,6 +16,20 @@ interface CoverImageInput extends CoverSeedInput {
 
 function normalizeSeedValue(value: string | null | undefined) {
   return String(value || '').trim()
+}
+
+function isLegacyDefaultCover(value: string, baseUrl?: string) {
+  try {
+    const url = new URL(value, baseUrl || 'https://blog.haoran-ai.workers.dev')
+    const siteHosts = new Set([
+      'blog.haoran-ai.workers.dev',
+      'ai-product-notes.3516750545s.workers.dev',
+    ])
+    if (baseUrl) siteHosts.add(new URL(baseUrl).hostname)
+    return siteHosts.has(url.hostname) && /^\/default-covers\/qm-cover-[123]\.jpg$/.test(url.pathname)
+  } catch {
+    return false
+  }
 }
 
 function buildSeed(input: string | CoverSeedInput) {
@@ -62,7 +74,7 @@ export function resolvePostCoverImage(
   options: { baseUrl?: string } = {},
 ) {
   const explicitCover = absolutizeSiteAssetUrl(normalizeSeedValue(input.cover_image), options.baseUrl)
-  if (explicitCover) return explicitCover
+  if (explicitCover && !isLegacyDefaultCover(explicitCover, options.baseUrl)) return explicitCover
 
   return absolutizeSiteAssetUrl(pickDefaultPostCoverPath(input), options.baseUrl)
 }

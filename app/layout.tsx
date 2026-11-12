@@ -71,8 +71,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: DEFAULT_SITE_OG_IMAGE,
-        width: 1280,
-        height: 720,
+        width: 1202,
+        height: 1308,
         alt: PERSONAL_SITE.siteName,
       },
     ],
